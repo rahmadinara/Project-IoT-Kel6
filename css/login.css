@@ -1,0 +1,120 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+.main-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* SISI KIRI */
+.welcome-side {
+    flex: 1.2;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 12% 0 8%;
+    background-image: url('https://static.fibre2fashion.com/Newsresource/images/294/adobestock-761401599_306484.jpeg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* Gradien overlay agar teks lebih mudah dibaca */
+    background: linear-gradient(to right, rgba(77, 64, 56, 0.9), rgba(77, 64, 56, 0.7));
+}
+
+.content { position: relative; z-index: 2; max-width: 500px; }
+.content h1 { 
+    font-size: 3.8rem; 
+    font-weight: 800; 
+    margin-bottom: 1.2rem; 
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+.content span { color: #a1caf1; }
+.content p { font-size: 1.1rem; opacity: 0.9; line-height: 1.6; }
+
+/* WAVE DIVIDER */
+.wave-divider {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 300px; /* Lebar ini kunci biar liukannya halus dan lebar */
+    height: 100%;
+    z-index: 3;
+}
+
+.wave-divider svg {
+    width: 100%;
+    height: 100%;
+    /* Filter ini bikin batas antara gambar dan form login lebih elegan */
+    filter: drop-shadow(-10px 0 15px rgba(0,0,0,0.1));
+}
+
+/* SISI KANAN */
+.login-side {
+    flex: 0.8;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 4;
+}
+
+.bg-circle {
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(161, 202, 241, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.login-box { width: 100%; max-width: 380px; padding: 40px; z-index: 5; }
+.login-box h2 { color: #4d4038; font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; }
+.subtitle { color: #94a3b8; margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+/* INPUT STYLING */
+.input-group { margin-bottom: 1.5rem; }
+.input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #4d4038; font-size: 0.85rem; }
+
+.input-wrapper { position: relative; display: flex; align-items: center; }
+.input-wrapper i { position: absolute; left: 15px; color: #cbd5e1; font-size: 1rem; transition: 0.3s; }
+.input-wrapper input { 
+    width: 100%; padding: 14px 14px 14px 45px; 
+    border: 1.5px solid #f1f5f9; border-radius: 12px; 
+    background: #f8fafc; font-size: 0.95rem; transition: all 0.3s ease;
+}
+
+.input-wrapper input:focus {
+    outline: none; border-color: #a1caf1; background: #fff;
+    box-shadow: 0 0 0 4px rgba(161, 202, 241, 0.15);
+}
+.input-wrapper input:focus + i { color: #a1caf1; }
+
+.forgot-wrapper { display: flex; justify-content: flex-end; margin-top: 8px; }
+.forgot { font-size: 0.75rem; color: #a1caf1; text-decoration: none; font-weight: 700; }
+.forgot:hover { text-decoration: underline; }
+
+/* BUTTON STYLING */
+.btn-login {
+    width: 100%; padding: 16px; border: none; border-radius: 12px; margin-top: 20px;
+    background: linear-gradient(135deg, #a1caf1 0%, #8db3d9 100%);
+    color: white; font-weight: 800; font-size: 1rem; cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px -10px rgba(161, 202, 241, 0.5);
+    letter-spacing: 1px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px -10px rgba(161, 202, 241, 0.6);
+}
+
+.footer-text { margin-top: 40px; text-align: center; font-size: 0.75rem; color: #cbd5e1; }

@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* Pastikan panggil link Google Font di HTML */
+    background-color: var(--potting-soil);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+
+    min-width: 1400px !important; 
+    overflow-x: auto !important;
+}

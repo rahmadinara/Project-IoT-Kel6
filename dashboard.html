@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoxGuardAI - Industrial Dashboard v2.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* CSS agar fitur pindah halaman smooth */
+        .page-content { display: none; animation: fadeIn 0.4s ease; }
+        .page-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-item { cursor: pointer; transition: all 0.3s; }
+        .full-page-wrapper { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        /* Tambahan styling untuk dashboard yang padat */
+        .section-divider { margin: 35px 0 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .section-divider h2 { font-size: 1.1rem; font-weight: 800; color: #3d342e; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <script>
+        if (localStorage.getItem("session") !== "active") {
+            alert("Akses ditolak! Silakan login terlebih dahulu.");
+            window.location.href = "Index.html"; 
+        }
+    </script>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <div class="logo-box">
+                <div class="logo-icon">B</div>
+                <div class="logo-text">
+                    <h2>BoxGuardAI</h2>
+                    <span>Packaging Detector</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div onclick="showPage('page-dashboard')" class="nav-item active" id="menu-dashboard">DASHBOARD</div>
+                <div onclick="showPage('page-camera')" class="nav-item" id="menu-camera">LIVE CAMERA</div>
+                <div onclick="showPage('page-history')" class="nav-item" id="menu-history">QC HISTORY</div>
+                
+                <div onclick="logoutUser()" class="nav-item" id="menu-logout" style="color: #e15759; margin-top: 300px; font-weight: bold;">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </div>
+            </nav>
+        </div>
+        
+        <div class="system-status">
+            <span class="status-dot"></span> SYSTEM ONLINE
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <div class="header-section">
+            <div class="header-image-container">
+                <img src="https://static.fibre2fashion.com/Newsresource/images/294/adobestock-761401599_306484.jpeg" alt="Header Image">
+                <div class="header-overlay"></div>
+            </div>
+
+            <header class="topbar">
+                <div class="header-left">
+                    <div class="menu-toggle" id="hamburger">
+                        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                    </div>
+                    <div class="header-titles">
+                        <p id="page-title-tag">QC SUPERVISOR PANEL</p>
+                        <h1 id="page-title-main">Real-time Production Monitoring</h1>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="info-pill">
+                        <span class="label">DATE</span>
+                        <span id="current-date" class="value">00/00/2026</span>
+                    </div>
+                    <div class="info-pill">
+                        <span class="label">TIME</span>
+                        <span id="clock" class="value">00:00:00</span>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <div class="dashboard-content">
+            
+            <section id="page-dashboard" class="page-content active">
+                
+                <div class="analytics-row">
+                    <div class="stats-grid">
+                        <div class="stat-card blue-primary">
+                            <span class="stat-label">TOTAL PACKAGING</span>
+                            <h2>12,540</h2>
+                            <div class="stat-bar"><div class="fill" style="width: 100%"></div></div>
+                            <p class="stat-desc">Throughput Capacity Today</p>
+                        </div>
+                        <div class="stat-card blue-light">
+                            <span class="stat-label">INTACT ITEMS</span>
+                            <h2 style="color: #39ab10">11,980</h2>
+                            <div class="stat-bar"><div class="fill" style="width: 95.5%"></div></div>
+                            <p class="stat-desc">Good Condition Packaging</p>
+                        </div>
+                        <div class="stat-card brown-accent">
+                            <span class="stat-label">DEFECT DETECTED</span>
+                            <h2 style="color: #e74c3c;">560</h2>
+                            <div class="stat-bar"><div class="fill" style="width: 4.5%; background: #e74c3c;"></div></div>
+                            <p class="stat-desc">Rejected Packaging</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <span class="stat-label">PRODUCTION YIELD RATIO</span>
+                        <div class="chart-container-flex" style="display: flex; align-items: center; justify-content: flex-start; gap: 60px; margin-top: 15px;">
+                            <div class="chart-stats-list">
+                                <div class="chart-stat-item" style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <span class="dot" style="background: #7baedb; width: 10px; height: 10px; border-radius: 50%;"></span>
+                                    <span style="font-size: 0.9rem; color: #475569;"></span>
+                                        Intact:<strong>11,980</strong>
+                                        <span style="color: #2ecc71; font-weight: 700; margin-left: 5px;">(95.5%)</span>
+                                    </span>
+                                </div>
+                                <div class="chart-stat-item" style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="dot" style="background: #3d342e;width: 10px; height: 10px; border-radius: 50%;"></span>
+                                    <span style="font-size: 0.9rem; color: #475569;"></span>
+                                        Defect: <strong>560</strong>
+                                        <span style="color: #ef4444; font-weight: 700; margin-left: 5px;">(4.5%)</span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-box-mini" style="width: 140px; height: 140px; position: relative;">
+                                <canvas id="qualityDoughnut"></canvas>
+                                <div class="doughnut-center-text" style="position: absolute; top: 54%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                    <strong style="font-size: 1rem; color: #3d342e;">95.5%</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="margin-top: 25px; padding: 25px;">
+                    <div class="stat-label">REJECTION REASONS</div>
+                    <div style="height: 200px; width: 100%; margin-top: 15px;">
+                        <canvas id="rejectChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="section-divider">
+                    <h2>LIVE CAMERA</h2>
+                    <span style="font-size: 0.7rem; color: #2ecc71; font-weight: 700;">● 3 CAMERAS ONLINE</span>
+                </div>
+                
+                <div class="camera-grid">
+                    <div class="camera-item">
+                        <div class="cam-label">CAM-01</div>
+                        <div class="cam-feed">CAM-01 LIVE</div>
+                    </div>
+                    <div class="camera-item">
+                        <div class="cam-label">CAM-02</div>
+                        <div class="cam-feed">CAM-02 LIVE</div>
+                    </div>
+                    <div class="camera-item">
+                        <div class="cam-label">CAM-03</div>
+                        <div class="cam-feed">CAM-03 LIVE</div>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="margin-top: 25px; border: 1px dashed #e74c3c;">
+                    <div class="stat-label" style="color: #e74c3c;">SYSTEM OVERRIDE</div>
+                    <button class="btn-emergency-full" style="margin-top: 10px;">EMERGENCY STOP PRODUCTION</button>
+                </div>
+
+                <div class="section-divider">
+                    <h2>HISTORY LOGS</h2>
+                </div>
+                <div class="history-full-card" style="background: white; border-radius: 15px; padding: 20px;">
+                    <div class="table-responsive-full">
+                        <table class="history-table-full">
+                            <thead>
+                                <tr>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>BATCH ID</th>
+                                    <th>STATUS</th>
+                                    <th>ACCURACY</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardHistoryBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-camera" class="page-content">
+    <div class="full-page-wrapper">
+        <h2>LIVE CAMERA</h2>
+        <div class="camera-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 20px;">
+            <div class="camera-item">
+                <div class="cam-label">CAM-01</div>
+                <div class="cam-feed" style="height: 250px;">CAM-01 LIVE</div>
+            </div>
+            <div class="camera-item">
+                <div class="cam-label">CAM-02</div>
+                <div class="cam-feed" style="height: 250px;">CAM-02 LIVE</div>
+            </div>
+            <div class="camera-item">
+                <div class="cam-label">CAM-03</div>
+                <div class="cam-feed" style="height: 250px;">CAM-03 LIVE</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="page-history" class="page-content">
+                <div class="full-page-wrapper">
+                    <h2>HISTORY LOGS</h2>
+                    <div class="table-responsive-full" style="margin-top: 20px; max-height: 70vh; overflow-y: auto;">
+                        <table class="history-table-full">
+                            <thead>
+                                <tr><th>DATE</th><th>TIME</th><th>BATCH ID</th><th>RESULT</th><th>ACCURACY</th></tr>
+                            </thead>
+                            <tbody id="historyBodyFull"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+           <section id="page-stats" class="page-content">
+    <div class="full-page-wrapper">
+        <h2>PRODUCTION ANALYTICS</h2>
+        <div class="stats-full-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+            <div class="stat-card">
+                <span class="stat-label">QUALITY RATIO</span>
+                <div style="height: 300px;"><canvas id="statsDoughnutFull"></canvas></div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">DEFECT DISTRIBUTION</span>
+                <div style="height: 300px;"><canvas id="statsBarFull"></canvas></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- NAVIGATION LOGIC ---
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); });
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('menu-' + pageId.split('-')[1]).classList.add('active');
+        
+        const titles = {
+            'page-dashboard': ['QC SUPERVISOR PANEL', 'Real-time Production Monitoring'],
+            'page-camera': ['LIVE MONITORING', 'All System Camera Feeds'],
+            'page-history': ['DATA ARCHIVE', 'Full Inspection History Log'],
+            'page-stats': ['ANALYTICS', 'Detailed Production Statistics']
+        };
+        document.getElementById('page-title-tag').textContent = titles[pageId][0];
+        document.getElementById('page-title-main').textContent = titles[pageId][1];
+
+        if(pageId === 'page-stats') { initFullStats(); }
+        sidebar.classList.remove('active'); overlay.classList.remove('show');
+    }
+
+    // --- CLOCK ---
+    function updateClockAndDate() {
+    const clockElement = document.getElementById("clock");
+    const dateElement = document.getElementById("current-date");
+    const now = new Date();
+
+  // Menampilkan Jam real-time (Format 24 Jam)
+    if (clockElement) {
+        clockElement.textContent = now.toLocaleTimeString('en-GB');
+    }
+
+    // Menampilkan Tanggal otomatis (Format: DD/MM/YYYY)
+    if (dateElement) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        dateElement.textContent = now.toLocaleDateString('en-GB', options);
+    }
+    }
+
+    // Jalankan fungsi saat script pertama kali dimuat
+    updateClockAndDate();
+    // Lakukan update setiap 1 detik (1000 milidetik)
+    setInterval(updateClockAndDate, 1000);
+
+    // --- CHARTS ---
+    let charts = {};
+    function initCharts() {
+        charts.doughnut = new Chart(document.getElementById('qualityDoughnut'), {
+            type: 'doughnut',
+            data: { datasets: [{ data: [95.5, 4.5], backgroundColor: ['#7baedb', '#3d342e'], borderWidth: 0 }] },
+            options: { cutout: '80%', maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        charts.bar = new Chart(document.getElementById('rejectChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Penyok', 'Berlubang', 'Basah', 'Terbuka', 'Lainnya'],
+                datasets: [{ 
+                    data: [210, 145, 95, 70, 40], 
+                    backgroundColor: ['#4e79a7', '#76b7b2', '#e15759', '#f28e2c', '#94a3b8'],
+                    borderRadius: 5
+                }]
+            },
+            options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    // --- HISTORY DATA ---
+    const historyData = [
+    {date: '17/05/2026', time: '11:43:00', batch: '#B-7721', res: 'PASSED', acc: '99.4%'},
+    {date: '17/05/2026', time: '11:40:45', batch: '#B-7720', res: 'REJECTED', acc: '98.2%'},
+    {date: '17/05/2026', time: '11:38:30', batch: '#B-7719', res: 'PASSED', acc: '99.1%'},
+    {date: '17/05/2026', time: '11:35:12', batch: '#B-7718', res: 'PASSED', acc: '97.8%'},
+    {date: '17/05/2026', time: '11:32:00', batch: '#B-7717', res: 'REJECTED', acc: '95.4%'}
+];
+
+    function fillHistory() {
+        const dashBody = document.getElementById('dashboardHistoryBody');
+        const fullBody = document.getElementById('historyBodyFull');
+        
+        const html = historyData.map(d => `
+            <tr>
+                <td style="color: #475569; font-weight: 600; font-size: 0.85rem;">${d.date}</td>
+                <td>${d.time}</td>
+                <td style="font-weight:600;">${d.batch}</td>
+                <td><span class="${d.res === 'PASSED' ? 'status-passed' : 'status-rejected'}">${d.res}</span></td>
+                <td>${d.acc}</td>
+            </tr>
+        `).join('');
+        
+        dashBody.innerHTML = html;
+        fullBody.innerHTML = html;
+    }
+
+    function logoutUser() {
+        // Hapus status session aktif dari browser
+        localStorage.removeItem("session"); 
+        // Tendang balik ke halaman login utama
+        window.location.href = "Index.html"; 
+    }
+
+    // Jalankan semua saat window di-load
+    window.addEventListener('load', () => {
+        updateClockAndDate();
+        fillHistory();
+    });
+
+    window.addEventListener('load', () => { initCharts(); updateClockAndDate(); fillHistory(); });
+</script>
+</body>
+</html>

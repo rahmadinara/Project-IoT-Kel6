@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users - BoxGuard</title>
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/users.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Style untuk Pop-up Gerbang Login Admin */
+    .admin-gate-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(30, 41, 59, 0.95); 
+        backdrop-filter: blur(8px);
+        z-index: 9999; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .admin-gate-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+    }
+    .admin-gate-box i.lock-icon {
+        font-size: 3.5rem;
+        color: #ef4444;
+        margin-bottom: 15px;
+    }
+    .admin-gate-box h3 {
+        color: #1e293b;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .admin-gate-box p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 25px;
+    }
+    .admin-gate-input {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    .admin-gate-btn {
+        width: 100%;
+        padding: 12px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+    .admin-gate-btn:hover { background: #dc2626; }
+    .back-to-dash {
+        display: inline-block;
+        margin-top: 15px;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    .back-to-dash:hover { color: #1e293b; text-decoration: underline; }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #ef4444;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .btn-delete:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+    /* Container Scrollable Khusus Tabel Users */
+    .table-scroll-container {
+        max-height: 320px; 
+        overflow-y: auto;   
+        overflow-x: hidden; 
+        position: relative;
+    }
+
+    /* Kustomisasi scrollbar modern */
+    .table-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .table-scroll-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    .table-scroll-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="adminGate" class="admin-gate-overlay">
+    <div class="admin-gate-box">
+        <i class="fa-solid fa-lock lock-icon"></i>
+        <h3>Admin Verification</h3>
+        <p>Halaman ini dikunci. Silakan masukkan kredensial Super Admin untuk melanjutkan.</p>
+        
+        <form id="gateForm">
+            <input type="text" id="gateUser" class="admin-gate-input" placeholder="Admin Username" required>
+            <input type="password" id="gatePass" class="admin-gate-input" placeholder="Admin Password" required>
+            <button type="submit" class="admin-gate-btn">Verify & Grant Access</button>
+        </form>
+        
+    </div>
+</div>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <h2>boxguard</h2>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="users.html" class="active">Users</a>
+    </nav>
+  </aside>
+
+  <main class="content" style="padding: 30px; background: #f8fafc; font-family: sans-serif; width: 100%;">
+    
+    <div style="margin-bottom: 25px;">
+        <h2 style="color: #3d342e; font-weight: 800; font-size: 1.6rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+            User Management
+        </h2>
+        <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Daftarkan akun operator baru dan kelola database kredensial sistem</p>
+    </div>
+
+    <div class="user-management-card" style="background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 30px;">
+        <form id="addUserForm" style="display: flex; flex-direction: column; gap: 15px; max-width: 500px;">
+            <div style="display: flex; gap: 15px;">
+                <input type="text" id="newUsername" placeholder="Username" required 
+                       style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; width: 100%; font-size: 0.9rem;">
+                <input type="password" id="newPassword" placeholder="Password" required 
+                       style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; width: 100%; font-size: 0.9rem;">
+            </div>
+            
+            <button type="submit" style="background-color: #4763e4; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: fit-content; font-size: 0.9rem;">
+                <i class="fa-solid fa-user-plus"></i> Tambah User Baru
+            </button>
+        </form>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <h3 style="color: #3d342e; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">
+            Registered Users List
+        </h3>
+        
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); overflow: visible;">
+            
+            <div class="table-scroll-container">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="color: #64748b;">
+                            <th style="padding: 12px 15px; font-weight: 600; width: 60px; position: sticky; top: 0; background: white; border-bottom: 2px solid #f1f5f9; text-align: left;">NO</th>
+                            <th style="padding: 12px 15px; font-weight: 600; position: sticky; top: 0; background: white; border-bottom: 2px solid #f1f5f9; text-align: left;">USERNAME</th>
+                            <th style="padding: 12px 15px; font-weight: 600; position: sticky; top: 0; background: white; border-bottom: 2px solid #f1f5f9; text-align: left;">PASSWORD</th>
+                            <th style="padding: 12px 15px; font-weight: 600; position: sticky; top: 0; background: white; border-bottom: 2px solid #f1f5f9; text-align: left;">ROLE ACCESSIBILITY</th>
+                            <th style="padding: 12px 15px; font-weight: 600; width: 100px; position: sticky; top: 0; background: white; border-bottom: 2px solid #f1f5f9; text-align: left;">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+    // --- FITUR SEKARANG: MANDIRI (TIDAK PERLU CEK LOGIN DASHBOARD LAGI) ---
+
+    // --- PROSES VALIDASI GERBANG LOGIN ADMIN ---
+    document.getElementById("gateForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const inputUser = document.getElementById("gateUser").value.trim();
+        const inputPass = document.getElementById("gatePass").value;
+
+        // Tarik data database user bawaan localStorage
+        const usersDatabase = JSON.parse(localStorage.getItem("usersDatabase")) || [];
+        
+        // Cari akun yang memiliki role Super Admin
+        const isAdmin = usersDatabase.find(u => 
+            u.username.toLowerCase() === inputUser.toLowerCase() && 
+            u.password === inputPass && 
+            u.role === "Super Admin"
+        );
+
+        if (isAdmin) {
+            alert("Verifikasi Berhasil! Akses Diberikan.");
+            document.getElementById("adminGate").style.display = "none"; 
+            renderUserTable(); 
+        } else {
+            alert("Akses Ditolak! Kredensial salah atau Anda bukan Super Admin.");
+            document.getElementById("gateForm").reset();
+        }
+    });
+
+    // --- FUNGSI ME-RENDER DATA DATABASE KE TABEL ---
+    function renderUserTable() {
+        const tableBody = document.getElementById("userTableBody");
+        if (!tableBody) return;
+
+        const usersDatabase = JSON.parse(localStorage.getItem("usersDatabase")) || [];
+        tableBody.innerHTML = "";
+
+        usersDatabase.forEach((user, index) => {
+            const row = document.createElement("tr");
+            row.style.borderBottom = "1px solid #f1f5f9";
+            if (index % 2 === 1) row.style.background = "#f8fafc";
+
+            let deleteButtonHtml = '';
+            if (user.username.toLowerCase() !== 'admin') {
+                deleteButtonHtml = `
+                    <button class="btn-delete" onclick="deleteUser(${index}, '${user.username}')" title="Hapus User">
+                        <i class="fa-solid fa-trash-can"></i> Hapus
+                    </button>
+                `;
+            } else {
+                deleteButtonHtml = `<span style="color: #94a3b8; font-size: 0.8rem; font-style: italic;">Sistem Utama</span>`;
+            }
+
+            row.innerHTML = `
+                <td style="padding: 12px 15px; color: #64748b; font-weight: 500; text-align: left;">${index + 1}</td>
+                <td style="padding: 12px 15px; font-weight: 600; color: #1e293b; text-align: left;">${user.username}</td>
+                <td style="padding: 12px 15px; color: #334155; font-family: monospace; text-align: left;">${user.password}</td>
+                <td style="padding: 12px 15px; text-align: left;">
+                    <span style="background: ${user.role === 'Super Admin' ? '#fee2e2' : '#e0e7ff'}; 
+                                 color: ${user.role === 'Super Admin' ? '#ef4444' : '#4f46e5'}; 
+                                 padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                        ${user.role || 'Operator QC'}
+                    </span>
+                </td>
+                <td style="padding: 12px 15px; text-align: left;">
+                    ${deleteButtonHtml}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // --- LOGIKA HAPUS USER ---
+    function deleteUser(index, username) {
+        const konfirmasi = confirm(`Apakah Anda yakin ingin menghapus user "${username}"?`);
+        
+        if (konfirmasi) {
+            let usersDatabase = JSON.parse(localStorage.getItem("usersDatabase")) || [];
+            usersDatabase.splice(index, 1);
+            localStorage.setItem("usersDatabase", JSON.stringify(usersDatabase));
+            alert(`User "${username}" berhasil deleted.`);
+            renderUserTable();
+        }
+    }
+
+    // --- LOGIKA REGISTER USER BARU ---
+    document.getElementById("addUserForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const usernameInput = document.getElementById("newUsername").value.trim();
+        const passwordInput = document.getElementById("newPassword").value;
+
+        let usersDatabase = JSON.parse(localStorage.getItem("usersDatabase")) || [];
+
+        const isExist = usersDatabase.some(user => user.username.toLowerCase() === usernameInput.toLowerCase());
+        if (isExist) {
+            alert("Username tersebut sudah terdaftar!");
+            return;
+        }
+
+        usersDatabase.push({
+            username: usernameInput,
+            password: passwordInput,
+            role: "Operator QC"
+        });
+
+        localStorage.setItem("usersDatabase", JSON.stringify(usersDatabase));
+        alert(`User "${usernameInput}" berhasil ditambahkan!`);
+        
+        document.getElementById("addUserForm").reset();
+        renderUserTable(); 
+    });
+</script>
+
+</body>
+</html>

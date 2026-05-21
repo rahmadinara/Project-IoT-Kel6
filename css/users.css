@@ -1,0 +1,133 @@
+.layout{
+  display:flex;
+}
+
+.content{
+  flex:1;
+  padding:30px;
+}
+
+.content h1{
+
+  font-size:32px;
+
+  margin-bottom:30px;
+
+  color:var(--brown);
+}
+
+#userForm{
+
+  display:flex;
+  gap:20px;
+
+  margin-bottom:30px;
+
+  background:white;
+
+  padding:25px;
+
+  border-radius:20px;
+
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+#userForm input{
+
+  flex:1;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:#f3f3f3;
+
+  font-size:16px;
+}
+
+#userForm input:focus{
+
+  outline:none;
+
+  border:2px solid var(--skyride);
+
+}
+
+#userForm button{
+
+  padding:15px 25px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:var(--brown);
+
+  color:white;
+
+  font-weight:600;
+
+  transition:.3s;
+}
+
+#userForm button:hover{
+
+  background:var(--skyride);
+
+  color:var(--brown);
+
+}
+
+#userList{
+
+  list-style:none;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:15px;
+}
+
+#userList li{
+
+  background:white;
+
+  padding:20px;
+
+  border-radius:16px;
+
+  box-shadow:0 5px 10px rgba(0,0,0,.05);
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  transition:.3s;
+}
+
+#userList li:hover{
+
+  transform:translateY(-2px);
+
+}
+
+.user-badge{
+
+  background:var(--skyride);
+
+  color:var(--brown);
+
+  padding:8px 14px;
+
+  border-radius:50px;
+
+  font-size:14px;
+
+  font-weight:600;
+}
